@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Est-ce Français ? – Quiz d'écoute</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bleu: #002395;
+    --rouge: #ED2939;
+    --blanc: #F7F5F0;
+    --or: #C9A84C;
+    --gris: #4A4A4A;
+    --gris-clair: #E8E4DC;
+    --vert: #2E7D52;
+    --vert-clair: #E8F5EE;
+    --rouge-clair: #FDECEA;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--blanc);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--gris);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--bleu);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header-tricolor {
+    display: flex;
+    height: 6px;
+  }
+  .header-tricolor span { flex: 1; }
+  .header-tricolor span:nth-child(1) { background: var(--bleu); }
+  .header-tricolor span:nth-child(2) { background: #fff; }
+  .header-tricolor span:nth-child(3) { background: var(--rouge); }
+
+  .header-inner {
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .fleur-de-lis {
+    font-size: 2rem;
+    color: var(--or);
+    letter-spacing: 1rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+
+  header h1 em {
+    color: var(--or);
+    font-style: italic;
+  }
+
+  header p.sous-titre {
+    color: rgba(255,255,255,0.75);
+    font-size: 1rem;
+    margin-top: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  /* INSTRUCTIONS BANNER */
+  .instrucciones {
+    background: linear-gradient(135deg, #FFF8E7 0%, #FFFDF5 100%);
+    border-bottom: 2px solid #E8D89A;
+    padding: 1.2rem 2rem;
+  }
+
+  .instrucciones-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .instrucciones-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #8B6914;
+    margin-bottom: 0.55rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .instrucciones-steps {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .step-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    border: 1.5px solid #E8D89A;
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    color: #5A4A1A;
+    line-height: 1.3;
+  }
+
+  .step-num {
+    background: var(--or);
+    color: #fff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .instrucciones-toggle {
+    background: none;
+    border: 1.5px solid #C9A84C;
+    color: #8B6914;
+    border-radius: 100px;
+    padding: 0.25rem 0.8rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    margin-left: auto;
+    align-self: center;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .instrucciones-toggle:hover { background: var(--or); color: #fff; border-color: var(--or); }
+
+  .instrucciones-body { width: 100%; }
+  .instrucciones-body.hidden { display: none; }
+
+  /* SCORE BOARD */
+  .scoreboard {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 2px solid var(--gris-clair);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 12px rgba(0,0,50,0.07);
+  }
+
+  .score-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--bleu);
+    font-weight: 700;
+  }
+
+  .score-pills {
+    display: flex;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .pill-correct { background: var(--vert-clair); color: var(--vert); border: 1.5px solid var(--vert); }
+  .pill-wrong   { background: var(--rouge-clair); color: var(--rouge); border: 1.5px solid var(--rouge); }
+  .pill-total   { background: #EEF1FB; color: var(--bleu); border: 1.5px solid var(--bleu); }
+  .pill-pct     { background: var(--bleu); color: #fff; font-weight: 700; }
+
+  .progress-bar-wrap {
+    width: 160px;
+    height: 6px;
+    background: var(--gris-clair);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bleu), var(--or));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* RESET BTN */
+  .btn-reset {
+    background: none;
+    border: 1.5px solid var(--rouge);
+    color: var(--rouge);
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: var(--rouge); color: #fff; }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 2.5rem auto;
+    padding: 0 1.2rem 4rem;
+  }
+
+  .section-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--bleu);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--gris-clair);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* AUDIO ROW */
+  .audio-list { display: flex; flex-direction: column; gap: 0.85rem; }
+
+  .audio-row {
+    background: #fff;
+    border: 1.5px solid var(--gris-clair);
+    border-radius: 14px;
+    padding: 1rem 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .audio-row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: var(--gris-clair);
+    border-radius: 14px 0 0 14px;
+    transition: background 0.3s;
+  }
+
+  .audio-row:hover {
+    border-color: #bbb;
+    box-shadow: 0 4px 16px rgba(0,0,50,0.07);
+    transform: translateY(-1px);
+  }
+
+  .audio-row.correct { border-color: var(--vert); background: var(--vert-clair); }
+  .audio-row.correct::before { background: var(--vert); }
+  .audio-row.wrong   { border-color: var(--rouge); background: var(--rouge-clair); }
+  .audio-row.wrong::before { background: var(--rouge); }
+
+  .audio-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bleu);
+    min-width: 28px;
+    text-align: center;
+  }
+
+  .lang-badge {
+    display: none; /* hidden until answered */
+    font-size: 0.72rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .audio-row.answered .lang-badge { display: inline-block; }
+  .badge-fr { background: #EEF1FB; color: var(--bleu); border: 1px solid var(--bleu); }
+  .badge-it { background: #FFF8E7; color: #B8860B; border: 1px solid #C9A84C; }
+  .badge-de { background: #FFF0F0; color: #8B0000; border: 1px solid #CD5C5C; }
+  .badge-en { background: #F0FFF4; color: #1A5C2F; border: 1px solid #2E7D52; }
+
+  .audio-player-wrap {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .audio-player-wrap audio {
+    width: 100%;
+    height: 34px;
+    accent-color: var(--bleu);
+  }
+
+  .audio-title {
+    font-size: 0.78rem;
+    color: #999;
+    margin-bottom: 0.2rem;
+    font-weight: 400;
+  }
+
+  /* CHECKBOXES */
+  .choices {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .choice-label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    border: 1.5px solid var(--gris-clair);
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .choice-label:hover { border-color: var(--bleu); color: var(--bleu); }
+
+  .choice-label input[type="radio"] {
+    accent-color: var(--bleu);
+    width: 14px; height: 14px;
+  }
+
+  .choice-label.selected-oui { border-color: var(--bleu); background: #EEF1FB; color: var(--bleu); }
+  .choice-label.selected-non { border-color: var(--rouge); background: var(--rouge-clair); color: var(--rouge); }
+
+  /* Feedback icon */
+  .feedback-icon {
+    font-size: 1.3rem;
+    min-width: 24px;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .audio-row.answered .feedback-icon { opacity: 1; transform: scale(1); }
+
+  /* RESULT MESSAGE */
+  .result-banner {
+    display: none;
+    margin-top: 2rem;
+    background: var(--bleu);
+    color: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+  }
+  .result-banner.visible { display: block; }
+  .result-banner h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--or);
+    margin-bottom: 0.5rem;
+  }
+  .result-banner p { font-size: 1rem; opacity: 0.85; }
+  .result-grade {
+    font-size: 3rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: #fff;
+  }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform:none; } }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.75rem;
+    color: #bbb;
+    border-top: 1px solid var(--gris-clair);
+  }
+
+  @media (max-width: 600px) {
+    .scoreboard { flex-direction: column; align-items: flex-start; }
+    .audio-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-tricolor"><span></span><span></span><span></span></div>
+  <div class="header-inner">
+    <span class="fleur-de-lis">⚜ ⚜ ⚜</span>
+    <h1>Est-ce <em>Français</em> ?</h1>
+    <p class="sous-titre">Écoutez chaque extrait audio et identifiez la langue parlée</p>
+  </div>
+</header>
+
+<!-- INSTRUCCIONES EN ESPAÑOL -->
+<div class="instrucciones">
+  <div class="instrucciones-inner">
+    <div style="flex:1;min-width:220px;">
+      <div class="instrucciones-title">📋 Instrucciones <span style="font-weight:300;font-size:0.8rem;color:#B8960A">(en español)</span>
+        <button class="instrucciones-toggle" onclick="toggleInstrucciones()">Ocultar ▲</button>
+      </div>
+      <div class="instrucciones-body" id="instr-body">
+        <div class="instrucciones-steps">
+          <div class="step-chip"><span class="step-num">1</span>Escucha cada extracto de audio haciendo clic en <strong>▶ Écouter</strong></div>
+          <div class="step-chip"><span class="step-num">2</span>Decide si lo que escuchas está en <strong>francés</strong> o en <strong>otro idioma</strong></div>
+          <div class="step-chip"><span class="step-num">3</span>Selecciona <strong>"C'est français"</strong> si es francés, o <strong>"Ce n'est pas français"</strong> si no lo es</div>
+          <div class="step-chip"><span class="step-num">4</span>Recibirás retroalimentación inmediata ✅ o ❌ — ¡acumula puntos y supera el <strong>85%</strong>!</div>
+        </div>
+        <div style="margin-top:0.7rem;font-size:0.75rem;color:#8B7030;background:#FFF3CC;border-radius:8px;padding:0.45rem 0.8rem;display:inline-block;">
+          💡 <strong>Consejo:</strong> Hay 20 extractos: francés, italiano, alemán e inglés. ¡Presta atención a los sonidos, no al significado!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCOREBOARD -->
+<div class="scoreboard">
+  <span class="score-label">🏆 Votre score</span>
+  <div class="score-pills">
+    <span class="pill pill-correct">✓ <span id="sc-correct">0</span> correct</span>
+    <span class="pill pill-wrong">✗ <span id="sc-wrong">0</span> erreur</span>
+    <span class="pill pill-total">📝 <span id="sc-total">0</span> / 20</span>
+    <span class="pill pill-pct"><span id="sc-pct">0</span>%</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:0.7rem;">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <button class="btn-reset" onclick="resetQuiz()">↺ Recommencer</button>
+  </div>
+</div>
+
+<main>
+  <p class="section-label">🎧 20 extraits audio — <em style="font-style:italic;font-weight:300">Sélectionnez une réponse après chaque écoute</em></p>
+  <div class="audio-list" id="audio-list"></div>
+  <div class="result-banner" id="result-banner">
+    <h2>Quiz terminé !</h2>
+    <div class="result-grade" id="result-grade"></div>
+    <p id="result-msg"></p>
+  </div>
+</main>
+
+<footer>Quiz linguistique · Tous droits réservés · <span style="color:var(--or)">⚜</span></footer>
+
+<script>
+// ─────────────────────────────────────────
+//  AUDIO DATA — using free TTS URLs via
+//  various public services. We use a mix of
+//  languages: FR(12), IT(4), DE(3), EN(1)
+//  Correct answer: isFrench true/false
+// ─────────────────────────────────────────
+
+// We'll use the free voicerss / responsivevoice CDN-style TTS approach.
+// Since no real audio files are provided, we'll use the Web Speech API
+// (SpeechSynthesis) directly in the browser to generate live TTS per clip.
+// This works entirely client-side with no external dependencies.
+
+const TRACKS = [
+  // FRENCH (12)
+  { id:1,  lang:'fr', label:'FR', isFrench:true,  text:"Bonjour, comment allez-vous aujourd'hui ? J'espère que vous passez une bonne journée.",  voiceLang:'fr-FR' },
+  { id:2,  lang:'fr', label:'FR', isFrench:true,  text:"La Tour Eiffel est le monument le plus visité de France. Elle se trouve à Paris.",           voiceLang:'fr-FR' },
+  { id:3,  lang:'fr', label:'FR', isFrench:true,  text:"Je voudrais une baguette et un croissant, s'il vous plaît. Merci beaucoup.",                  voiceLang:'fr-FR' },
+  { id:4,  lang:'fr', label:'FR', isFrench:true,  text:"Le soleil se couche à l'horizon et le ciel devient rouge et orange. C'est magnifique.",        voiceLang:'fr-FR' },
+  { id:5,  lang:'fr', label:'FR', isFrench:true,  text:"Nous allons au marché ce matin pour acheter des légumes frais et du fromage.",                  voiceLang:'fr-FR' },
+  { id:6,  lang:'fr', label:'FR', isFrench:true,  text:"Les enfants jouent dans le jardin pendant que leurs parents préparent le dîner.",              voiceLang:'fr-FR' },
+  { id:7,  lang:'fr', label:'FR', isFrench:true,  text:"La littérature française est riche avec des auteurs comme Victor Hugo et Marcel Proust.",       voiceLang:'fr-FR' },
+  { id:8,  lang:'fr', label:'FR', isFrench:true,  text:"Quelle belle journée pour se promener dans les rues de Lyon et découvrir ses bouchons.",        voiceLang:'fr-FR' },
+  { id:9,  lang:'fr', label:'FR', isFrench:true,  text:"Excusez-moi, pourriez-vous m'indiquer le chemin pour aller à la gare, s'il vous plaît ?",      voiceLang:'fr-FR' },
+  { id:10, lang:'fr', label:'FR', isFrench:true,  text:"Le fromage camembert et le vin rouge sont des symboles de la gastronomie française.",           voiceLang:'fr-FR' },
+  { id:11, lang:'fr', label:'FR', isFrench:true,  text:"Demain, nous partirons en vacances dans le sud de la France, au bord de la mer Méditerranée.",  voiceLang:'fr-FR' },
+  { id:12, lang:'fr', label:'FR', isFrench:true,  text:"La Révolution française de 1789 a profondément transformé la société et l'histoire du monde.",  voiceLang:'fr-FR' },
+  // ITALIAN (4)
+  { id:13, lang:'it', label:'IT', isFrench:false, text:"Buongiorno, come stai oggi? Spero che tu stia passando una bella giornata.",                    voiceLang:'it-IT' },
+  { id:14, lang:'it', label:'IT', isFrench:false, text:"Roma è una città meravigliosa con una storia millenaria e una cucina straordinaria.",            voiceLang:'it-IT' },
+  { id:15, lang:'it', label:'IT', isFrench:false, text:"Vorrei ordinare una pizza margherita e un bicchiere di vino rosso, per favore.",                 voiceLang:'it-IT' },
+  { id:16, lang:'it', label:'IT', isFrench:false, text:"Il Colosseo è il monumento più famoso di Roma e attira milioni di turisti ogni anno.",           voiceLang:'it-IT' },
+  // GERMAN (3)
+  { id:17, lang:'de', label:'DE', isFrench:false, text:"Guten Morgen, wie geht es Ihnen heute? Ich hoffe, Sie haben einen schönen Tag.",                voiceLang:'de-DE' },
+  { id:18, lang:'de', label:'DE', isFrench:false, text:"Berlin ist die Hauptstadt von Deutschland und eine sehr lebendige und kulturreiche Stadt.",       voiceLang:'de-DE' },
+  { id:19, lang:'de', label:'DE', isFrench:false, text:"Das Oktoberfest in München ist das größte Volksfest der Welt. Es findet jedes Jahr statt.",      voiceLang:'de-DE' },
+  // ENGLISH (1)
+  { id:20, lang:'en', label:'EN', isFrench:false, text:"Good morning, how are you today? I hope you're having a wonderful and productive day.",          voiceLang:'en-GB' },
+];
+
+// Shuffle the tracks so it's not predictable
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+let tracks = shuffle(TRACKS);
+let answers = {}; // id -> 'oui' | 'non'
+let score = { correct: 0, wrong: 0 };
+
+function speakTrack(track) {
+  if (!window.speechSynthesis) {
+    alert("Votre navigateur ne supporte pas la synthèse vocale.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(track.text);
+  utter.lang = track.voiceLang;
+  utter.rate = 0.92;
+
+  // Try to pick a voice matching the language
+  const voices = window.speechSynthesis.getVoices();
+  const match = voices.find(v => v.lang.startsWith(track.voiceLang.split('-')[0]));
+  if (match) utter.voice = match;
+
+  window.speechSynthesis.speak(utter);
+}
+
+function buildList() {
+  const list = document.getElementById('audio-list');
+  list.innerHTML = '';
+  tracks.forEach((track, idx) => {
+    const row = document.createElement('div');
+    row.className = 'audio-row';
+    row.id = `row-${track.id}`;
+
+    const badgeClass = { fr:'badge-fr', it:'badge-it', de:'badge-de', en:'badge-en' }[track.lang];
+
+    row.innerHTML = `
+      <div class="audio-num">${idx + 1}</div>
+      <span class="lang-badge ${badgeClass}">${track.label}</span>
+      <div class="audio-player-wrap">
+        <div class="audio-title">Extrait #${idx + 1}</div>
+        <button onclick="speakTrack(tracks[${idx}])" style="
+          background: var(--bleu);
+          color: #fff;
+          border: none;
+          border-radius: 100px;
+          padding: 0.4rem 1.1rem;
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.82rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+          transition: background 0.2s;
+        " onmouseover="this.style.background='#001A7A'" onmouseout="this.style.background='var(--bleu)'">
+          ▶ Écouter
+        </button>
+      </div>
+      <div class="choices">
+        <label class="choice-label" id="lbl-oui-${track.id}" onclick="selectAnswer(${track.id}, 'oui', ${track.isFrench})">
+          <input type="radio" name="q${track.id}" value="oui"> 🇫🇷 C'est français
+        </label>
+        <label class="choice-label" id="lbl-non-${track.id}" onclick="selectAnswer(${track.id}, 'non', ${track.isFrench})">
+          <input type="radio" name="q${track.id}" value="non"> 🚫 Ce n'est pas français
+        </label>
+      </div>
+      <div class="feedback-icon" id="icon-${track.id}"></div>
+    `;
+
+    list.appendChild(row);
+  });
+}
+
+function selectAnswer(id, choice, isFrench) {
+  if (answers[id]) return; // already answered
+
+  answers[id] = choice;
+  const row = document.getElementById(`row-${id}`);
+  const lblOui = document.getElementById(`lbl-oui-${id}`);
+  const lblNon = document.getElementById(`lbl-non-${id}`);
+  const icon  = document.getElementById(`icon-${id}`);
+
+  if (choice === 'oui') lblOui.classList.add('selected-oui');
+  else lblNon.classList.add('selected-non');
+
+  // Check correctness
+  const isCorrect = (choice === 'oui') === isFrench;
+
+  row.classList.add('answered');
+  if (isCorrect) {
+    row.classList.add('correct');
+    icon.textContent = '✅';
+    score.correct++;
+  } else {
+    row.classList.add('wrong');
+    icon.textContent = '❌';
+    score.wrong++;
+  }
+
+  // Disable labels
+  lblOui.style.pointerEvents = 'none';
+  lblNon.style.pointerEvents = 'none';
+
+  updateScore();
+
+  if (Object.keys(answers).length === tracks.length) {
+    showResult();
+  }
+}
+
+function updateScore() {
+  const total = Object.keys(answers).length;
+  document.getElementById('sc-correct').textContent = score.correct;
+  document.getElementById('sc-wrong').textContent   = score.wrong;
+  document.getElementById('sc-total').textContent   = total;
+  const pct = total > 0 ? Math.round((score.correct / total) * 100) : 0;
+  document.getElementById('sc-pct').textContent = pct;
+  document.getElementById('progress-bar').style.width = (total / tracks.length * 100) + '%';
+}
+
+function showResult() {
+  const pct = Math.round((score.correct / tracks.length) * 100);
+  let grade, msg;
+  if (pct === 100) { grade = '20 / 20 🏆'; msg = "Parfait ! Vous avez une oreille exceptionnelle pour les langues !"; }
+  else if (pct >= 85) { grade = `${score.correct} / 20 ⭐`; msg = "Excellent résultat ! Votre sens linguistique est très développé."; }
+  else if (pct >= 70) { grade = `${score.correct} / 20 👍`; msg = "Bon travail ! Vous distinguez bien le français des autres langues."; }
+  else if (pct >= 50) { grade = `${score.correct} / 20 📚`; msg = "Pas mal ! Continuez à pratiquer pour améliorer votre oreille."; }
+  else { grade = `${score.correct} / 20 💪`; msg = "Continuez à travailler — chaque écoute améliore votre perception des langues !"; }
+
+  document.getElementById('result-grade').textContent = grade;
+  document.getElementById('result-msg').textContent   = msg;
+  const banner = document.getElementById('result-banner');
+  banner.classList.add('visible');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetQuiz() {
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  tracks = shuffle(TRACKS);
+  answers = {};
+  score = { correct: 0, wrong: 0 };
+  updateScore();
+  document.getElementById('result-banner').classList.remove('visible');
+  buildList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleInstrucciones() {
+  const body = document.getElementById('instr-body');
+  const btn = document.querySelector('.instrucciones-toggle');
+  body.classList.toggle('hidden');
+  btn.textContent = body.classList.contains('hidden') ? 'Mostrar ▼' : 'Ocultar ▲';
+}
+
+// Voices load async in some browsers
+window.speechSynthesis && window.speechSynthesis.getVoices();
+window.speechSynthesis && (window.speechSynthesis.onvoiceschanged = () => {});
+
+buildList();
+updateScore();
+</script>
+</body>
+</html>
