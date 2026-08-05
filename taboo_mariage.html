@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Taboo — Le Mariage</title>
+<style>
+  :root{
+    --ivoire: #FAF6EF;
+    --bordeaux: #7A2E38;
+    --or: #B9975B;
+    --charbon: #2B2420;
+    --rose-poudre: #E8D6D2;
+    --ligne: #C9BBA8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body{
+    background: var(--ivoire);
+    margin: 0;
+    padding: 28px;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: var(--charbon);
+  }
+
+  .page-header{
+    text-align: center;
+    margin-bottom: 26px;
+  }
+
+  .page-header .eyebrow{
+    font-family: Helvetica, Arial, sans-serif;
+    letter-spacing: 0.35em;
+    font-size: 11px;
+    color: var(--bordeaux);
+    text-transform: uppercase;
+  }
+
+  .page-header h1{
+    font-size: 34px;
+    font-weight: 400;
+    font-style: italic;
+    margin: 6px 0 4px;
+    color: var(--charbon);
+  }
+
+  .page-header .sub{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    color: #6b5e4f;
+    letter-spacing: 0.04em;
+  }
+
+  .grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    max-width: 950px;
+    margin: 0 auto;
+  }
+
+  .card{
+    background: #fff;
+    border: 1px dashed var(--ligne);
+    padding: 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    min-height: 230px;
+    position: relative;
+  }
+
+  .card::before{
+    content: "";
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 1px solid var(--rose-poudre);
+    pointer-events: none;
+  }
+
+  .card-num{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--or);
+    text-transform: uppercase;
+  }
+
+  .mot{
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--bordeaux);
+    margin: 6px 0 2px;
+    line-height: 1.15;
+  }
+
+  .article{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 10px;
+    color: #9a8b76;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .divider{
+    border: none;
+    border-top: 1px solid var(--rose-poudre);
+    margin: 4px 0 10px;
+  }
+
+  .interdit-label{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    color: var(--bordeaux);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  ul.mots-interdits{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  ul.mots-interdits li{
+    font-size: 14px;
+    padding: 3px 0;
+    color: var(--charbon);
+    border-bottom: 1px dotted #e4dccf;
+  }
+
+  ul.mots-interdits li:last-child{
+    border-bottom: none;
+  }
+
+  ul.mots-interdits li::before{
+    content: "✕ ";
+    color: var(--bordeaux);
+    font-weight: bold;
+    margin-right: 4px;
+  }
+
+  @media print {
+    body{ padding: 0; }
+    .grid{ max-width: 100%; }
+    .card{ break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="page-header">
+    <div class="eyebrow">EDULINGUA · Jeu de vocabulaire</div>
+    <h1>Taboo — Le Mariage</h1>
+    <div class="sub">Découpez selon les pointillés · faites deviner le mot sans utiliser les mots interdits</div>
+  </div>
+
+  <div class="grid" id="cardGrid"></div>
+
+  <script>
+    const cartes = [
+      { mot: "LA ROBE DE MARIÉE", article:"Vêtement", interdits: ["Blanche", "Mariage", "Porter", "Tissu", "Jupe"] },
+      { mot: "LE SMOKING", article:"Vêtement", interdits: ["Costume", "Marié", "Noir", "Veste", "Cravate"] },
+      { mot: "LE VOILE", article:"Accessoire", interdits: ["Tête", "Mariée", "Transparent", "Tissu", "Visage"] },
+      { mot: "LA TRAÎNE", article:"Partie de la robe", interdits: ["Robe", "Longue", "Derrière", "Tissu", "Porter"] },
+      { mot: "LE BOUQUET", article:"Accessoire", interdits: ["Fleurs", "Mariée", "Mains", "Tenir", "Blanc"] },
+      { mot: "LE NŒUD PAPILLON", article:"Accessoire", interdits: ["Cravate", "Cou", "Marié", "Tissu", "Forme"] },
+      { mot: "LA BOUTONNIÈRE", article:"Accessoire", interdits: ["Fleur", "Veste", "Marié", "Petite", "Épingler"] },
+      { mot: "LE COUTURIER", article:"Métier", interdits: ["Coudre", "Robe", "Mode", "Créer", "Vêtements"] },
+      { mot: "LE TAILLEUR", article:"Métier", interdits: ["Costume", "Coudre", "Homme", "Mesure", "Vêtements"] },
+      { mot: "LE / LA STYLISTE", article:"Métier", interdits: ["Mode", "Créer", "Vêtements", "Dessiner", "Tendance"] },
+      { mot: "LES GANTS", article:"Accessoire", interdits: ["Mains", "Tissu", "Porter", "Doigts", "Mariée"] },
+      { mot: "LES CHAUSSURES", article:"Vêtement", interdits: ["Pieds", "Porter", "Talons", "Mariée", "Marcher"] },
+    ];
+
+    const grid = document.getElementById("cardGrid");
+    cartes.forEach((c, i) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-num">Carte ${String(i+1).padStart(2,"0")}</div>
+        <div class="mot">${c.mot}</div>
+        <div class="article">${c.article}</div>
+        <hr class="divider">
+        <div class="interdit-label">Mots interdits</div>
+        <ul class="mots-interdits">
+          ${c.interdits.map(m => `<li>${m}</li>`).join("")}
+        </ul>
+      `;
+      grid.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>
